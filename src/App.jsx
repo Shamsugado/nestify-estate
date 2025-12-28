@@ -1,12 +1,13 @@
 
 import React from 'react'
 import { Outlet } from 'react-router-dom'
+import Header from './components/Header'
 
 const App = () => {
   return (
     // <h1 class="text-8xl font-bold underline">App</h1>
     <>
-    <nav>Navbar</nav>
+    <Header/>
     <Outlet/>
     <footer>Footer</footer>
     </>
