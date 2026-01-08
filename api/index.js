@@ -23,3 +23,14 @@ app.listen(3000, () => {
 // The above line is replaced with the following to use ES6 module import. As we have already imported userRouter.
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
+
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  return res.status(statusCode).json({ 
+    success: false,
+    statusCode,
+    message,
+   });
+
+});
