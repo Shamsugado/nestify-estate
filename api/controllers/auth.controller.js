@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error.js";
+import e from "express";
 
 
 export const signup = async (req, res, next) => {
@@ -37,5 +38,35 @@ export const signin = async (req, res, next) => {
 
   } catch (error) {
     next(error);
+  }
+};
+
+export const google = async (req, res, next) => {
+  // Google OAuth logic here
+  try {
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
+      const { password, ...otherDetails } = existingUser._doc;
+      return res.cookie("access_token", token, { httpOnly: true }).status(200).json(otherDetails);
+    }else {
+      const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).toUpperCase().slice(-8);
+      const hashedPassword = bcrypt.hashSync(generatedPassword, 8);
+      const newUser = new User({
+        username: req.body.displayName.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-8),
+        email: req.body.email,
+        password: hashedPassword,
+        photoURL: req.body.photoURL,
+      });
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const { password, ...otherDetails } = newUser._doc;
+      return res.cookie("access_token", token, { httpOnly: true }).status(200).json(otherDetails);
+    }
+    
+  
+  } catch (error) {
+    next(error);
+
   }
 };
