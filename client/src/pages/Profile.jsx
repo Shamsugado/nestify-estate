@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useRef} from 'react';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from '../firebase';
-import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserFailure, deleteUserSuccess,} from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
 
 const Profile = () => {
@@ -89,6 +89,24 @@ const Profile = () => {
     }
   };
 
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+
+  
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -100,13 +118,13 @@ const Profile = () => {
                 className="w-24 h-24 rounded-full object-cover cursor-pointer self-center mt-2"
               />
               <p className='text-center mt-2'>
-                {fileUploadError?
-                  <span className='text-red-700'>Error uploading image. (Image must be less than 2 MB).</span> :
-                  filePercent > 0 && filePercent < 100 ?
-                  <span className='text-slate-700'>{`Uploading ${filePercent}%`}</span> :
-                  filePercent === 100 ? <span className='text-green-700'>Image uploaded successfully!</span> 
-                  : ""
-                }
+                {fileUploadError? (
+                  <span className='text-red-700'>Error uploading image. (Image must be less than 2 MB).</span> ):
+                  filePercent > 0 && filePercent < 100 ?(
+                  <span className='text-slate-700'>{`Uploading ${filePercent}%`}</span> ):
+                  filePercent === 100 ? ( <span className='text-green-700'>Image uploaded successfully!</span> 
+                  ): (" "
+                )}
               </p>
   <input type='text' placeholder='username' 
   defaultValue={currentUser.username} id='username' 
@@ -122,7 +140,7 @@ const Profile = () => {
   </button>
       </form>
       <div className='flex justify-between mt-5'>
-        <span className='text-red-700 cursor-pointer'>
+        <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>
           Delete account
         </span>
         <span className='text-red-700 cursor-pointer'>
