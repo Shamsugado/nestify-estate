@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import userRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
 import cookieParser from 'cookie-parser';
+import Listing from './models/listing.model.js';
 dotenv.config();
 
 mongoose.connect(process.env.MONGO_PASSWORD).then(() => {
@@ -26,6 +27,7 @@ app.listen(3000, () => {
 // The above line is replaced with the following to use ES6 module import. As we have already imported userRouter.
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/listing', Listing);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
