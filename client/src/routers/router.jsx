@@ -9,6 +9,7 @@ import PrivateRoutes from "../components/PrivateRoutes";
 import CreateListing from "../pages/createListing";
 import UpdateListing from "../pages/UpdateListing.jsx";
 import Listing from "../pages/Listing.jsx";
+import Search from "../pages/Search.jsx";
 
 
 const router = createBrowserRouter([
@@ -46,6 +47,11 @@ const router = createBrowserRouter([
         path:"/create-Listing",
         element:<CreateListing/>
       },
+      {
+        path:"/search",
+        element:<Search/>
+      },
+
       { 
         path:"/update-listing/:listingId",
         element:<UpdateListing/>
