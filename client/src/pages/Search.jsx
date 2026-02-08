@@ -17,7 +17,6 @@ const Search = () => {
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  // console.log(listings);
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
@@ -128,7 +127,7 @@ const Search = () => {
     }
     setListings([...listings, ...data]);
   };
-  };
+
   return (
     <div className='flex flex-col md:flex-row'>
       <div className='p-7  border-b-2 md:border-r-2 md:min-h-screen'>
@@ -264,5 +263,6 @@ const Search = () => {
     </div>
   );
 }
+};
 
 export default Search
